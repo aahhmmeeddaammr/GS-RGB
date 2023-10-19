@@ -4,9 +4,9 @@
 #include "bmplib.cpp"
 using namespace std ;
 bool RGB1::validRGB(int i, int j) {
-    return i<SIZE&&j<SIZE &&i>=0&&j>=0 ;
+    return i<SIZE&&j<SIZE &&i>=0&&j>=0 ; //check if pixel is out-of range
 }
-
+//this F copies image to image2
 void RGB1::equalRGB() {
     for(int i = 0 ; i < SIZE ; ++i) {
         for (int j = 0; j < SIZE; ++j) {
@@ -16,7 +16,7 @@ void RGB1::equalRGB() {
         }
     }
 }
-
+//F to save the image after applying any filter
 void RGB1::saveImageRGB() {
     char imageFileName[100];
     cout << endl << "Enter the target image file name: ";
@@ -36,7 +36,7 @@ void RGB1::saveImageRGB() {
     if(!exit)
         MenuRGB();
 }
-
+// F for reading the image
 void RGB1:: loadImageRGB() {
     char imageFileName[100];
     cout << "Enter the source image file name: ";
@@ -48,9 +48,9 @@ void RGB1:: loadImageRGB() {
     }else{
         loadImageRGB();
     }
-    MenuRGB();
+    MenuRGB(); // call F to apply the desired filter to image
 }
-
+// Allowed filters to apply
 void RGB1::MenuRGB() {
     int filter;
     cout<<"1- Black & White Filter"<<endl;
@@ -131,7 +131,7 @@ void RGB1::MenuRGB() {
     }
 
 }
-
+//getting BW image
 void RGB1::Black_WhiteRGB() {
     for(int i = 0 ; i < SIZE ; ++i){
         for(int j = 0 ; j < SIZE ; ++j){
@@ -139,10 +139,10 @@ void RGB1::Black_WhiteRGB() {
             imagergb[i][j][2] = imagergb[i][j][1] ;
         }
     }
-    save= false;
+    save= false; // allow applying many filter at the same time(run) without changing the original photo
     MenuRGB();
 }
-
+//inverting colors of image
 void RGB1::InvertRGB() {
     for(int i = 0; i < SIZE; ++i){
         for(int j = 0 ; j < SIZE ; ++j){
@@ -154,7 +154,7 @@ void RGB1::InvertRGB() {
     save= false;
     MenuRGB();
 }
-
+//merge bet. 2 images
 void RGB1::MergeRGB() {
     char imageFileName[100];
     cout << "   Please enter name of image file to merge with: ";
@@ -176,7 +176,7 @@ void RGB1::MergeRGB() {
         MergeRGB();
     }
 }
-
+//Flipping image horizontally and vertically
 void RGB1::FlipRGB() {
     char f;
     cout <<"   Flip (h)orizontally or (v)ertically ? "<< flush;
@@ -223,13 +223,13 @@ void RGB1::FlipRGB() {
         MenuRGB();
     }
 }
-
+//rotating image with diff. angles
 void RGB1::RotateRGB() {
     int rotate;
     cout<<"   Rotate (90), (180) or (270) degrees? "<<flush;
     cin>>rotate;
     if(rotate == 90 || rotate == 180 || rotate == 270){
-        int flips = rotate/90 ;
+        int flips = rotate/90 ; //no. of flips according to chosen angle
         while(flips--){
             for (int i = 0; i < SIZE/2; i++){
                 for (int j = i; j<SIZE-i-1; j++){
@@ -244,7 +244,6 @@ void RGB1::RotateRGB() {
             }
         }
         save= false;
-        cout << endl << "Filter Applied Successfully !!" << endl ;
         MenuRGB();
     }
     else{
@@ -252,7 +251,7 @@ void RGB1::RotateRGB() {
         RotateRGB();
     }
 }
-
+//get dark and light image
 void RGB1::Darken_LightenRGB() {
     char mood;
     cout<<"   Do you want to (d)arken or (l)ighten? "<<flush;
@@ -266,7 +265,6 @@ void RGB1::Darken_LightenRGB() {
             }
         }
         save = false;
-        cout << endl << "Filter Applied Successfully !!" << endl ;
         MenuRGB();
     }
     else if(mood=='l'){
@@ -278,7 +276,6 @@ void RGB1::Darken_LightenRGB() {
             }
         }
         save = false;
-        cout << endl << "Filter Applied Successfully !!" << endl ;
         MenuRGB();
     }
     else{
@@ -286,7 +283,7 @@ void RGB1::Darken_LightenRGB() {
         Darken_LightenRGB();
     }
 }
-
+// showing the edges image includes
 void RGB1::Detect_EdgeRGB() {
     for(int i = 0 ; i < SIZE ; ++i){
         for(int j = 0 ; j < SIZE ; ++j){
@@ -307,7 +304,7 @@ void RGB1::Detect_EdgeRGB() {
     for(int i=0;i<SIZE;i++){
         for (int j = 0; j <SIZE ; ++j){
             for(int k = 0 ; k < RGB ; ++k){
-                if(imagergb[i][j][k]==0&&
+                if(imagergb[i][j][k]==0&& // detect of any pixel around is white(means it is an edge)
                    ((validRGB(i-1,j-1)&&imagergb[i-1][j-1][k]==255)
                     ||(validRGB(i-1,j)&&imagergb[i-1][j][k]==255)
                     ||(validRGB(i-1,j+1)&&imagergb[i-1][j+1][k]==255)
@@ -317,7 +314,7 @@ void RGB1::Detect_EdgeRGB() {
                     ||(validRGB(i+1,j+1)&&imagergb[i+1][j+1][k]==255)
                     ||(validRGB(i,j+1)&&imagergb[i][j+1][k]==255)))
                 {
-                    image2rgb[i][j][k]=0;
+                    image2rgb[i][j][k]=0; // using image2 don't change in the original image and affect the result
                 }
                 else{
                     image2rgb[i][j][k]=255;
@@ -328,7 +325,7 @@ void RGB1::Detect_EdgeRGB() {
     equalRGB();
     MenuRGB();
 }
-
+//enlarge any chosen quarter of image
 void RGB1::EnlargeRGB() {
     int qu;
     cout << "Which quarter to enlarge 1, 2, 3 or 4?" << flush;
@@ -410,6 +407,7 @@ void RGB1::EnlargeRGB() {
     MenuRGB();
 }
 
+// shrinking image to any chosen dimensions
 void RGB1::ShrinkRGB() {
     cout<<"Shrink to (1/(2)), (1/(3)) or (1/(4))?"<<flush;
     int Shrink;
@@ -418,7 +416,7 @@ void RGB1::ShrinkRGB() {
         for (int j = 0; j <SIZE ; ++j){
             for(int k = 0 ; k < RGB ; ++k){
                 image2rgb[i][j][k]= 255;
-                image2rgb[i/Shrink][j/Shrink][k]=imagergb[i][j][k];
+                image2rgb[i/Shrink][j/Shrink][k]=imagergb[i][j][k]; //put shrink changes in image2
             }
         }
     }save= false;
@@ -426,7 +424,7 @@ void RGB1::ShrinkRGB() {
     MenuRGB();
 
 }
-
+//mirror any chosen quarter of image
 void RGB1::MirrorRGB() {
     char c ;
     cout << "Mirror (l)eft, (r)ight, (u)pper, (d)own side?" << flush ;
@@ -476,10 +474,35 @@ void RGB1::MirrorRGB() {
     save = false ;
     MenuRGB();
 }
-
-void RGB1::ShuffleRGB(){
+//showing a chosen order of quarters
+void RGB1::ShuffleRGB() {
+    int a , b , c , d ;
+    cout << "New order of quarters ?" << flush ;
+    cin >> a >> b >> c >> d ;
+    vector<int> v ;
+    vector<pair<int,int>> beg{{0,0},{0,127},{127,0},{127,127}};// the dimension of the beginning of each 4 quarters
+    vector<pair<int,int>> end{{127,127},{127,255},{255,127},{255,255}};// dimensions of the end of each 4 quarters
+    v.emplace_back(a) ; v.emplace_back(b) ; v.emplace_back(c) ; v.emplace_back(d) ;
+    int o = 0 ;
+    for(auto &k : v){
+        int y=beg[o].first;
+        for(int i = beg[k-1].first  ; i <= end[k-1].first ; ++i){
+            int h=beg[o].second;
+            for(int j = beg[k-1].second ; j <= end[k-1].second ; ++j){
+                for(int r = 0 ; r < RGB ; ++r){
+                    image2rgb[y][h][r]=imagergb[i][j][r];
+                }
+                h++;
+            }
+            y++;
+        }
+        o++;
+    }
+    equalRGB();
+    save = false ;
+    MenuRGB();
 }
-
+// get a Blur image
 void RGB1::BlurRGB() {
     int b = 4 ;
     while(b--){
@@ -496,7 +519,7 @@ void RGB1::BlurRGB() {
                         ||(validRGB(i+1,j)&&(y+=imagergb[i+1][j][k])&&++cnt)
                         ||(validRGB(i+1,j+1)&&(y+=imagergb[i+1][j+1][k])&&++cnt)
                         ||(validRGB(i,j+1)&&(y+=imagergb[i][j+1][k])&&++cnt))){
-                        imagergb[i][j][k] = y/cnt ;
+                        imagergb[i][j][k] = y/cnt ; //getting avg of all pixels around to blur it
                     }
                 }
             }
@@ -505,7 +528,7 @@ void RGB1::BlurRGB() {
     save= false;
     MenuRGB();
 }
-
+//cropping image to your chosen dimensions
 void RGB1::CropRGB() {
     cout<<"Please enter x y l w:"<<flush;
     int x,y,l,w;
@@ -523,13 +546,13 @@ void RGB1::CropRGB() {
     save= false;
     MenuRGB();
 }
-
+//right skew of image
 void RGB1::Skew_RightRGB() {
     cout<<"Please enter degree to skew right:"<<flush;
     double a;
     cin>>a;
     a*=3.14/180;
-    int ed=(256*tan(a));
+    int ed=(256*tan(a));// get the length of edge that image exceeds
     unsigned char imgrgb[SIZE][SIZE+ed][RGB];
     for (int i = 0; i < SIZE; ++i){
         for (int j = 0; j < SIZE+ed ; ++j){
@@ -539,7 +562,7 @@ void RGB1::Skew_RightRGB() {
         }
     }
     for (int i = 0; i < SIZE; ++i){
-        int o=(256-i)*tan(a);
+        int o=(256-i)*tan(a);//changing the length of edge over rows
         for (int j = 0; j+o < SIZE+ed ; ++j){
             for(int k = 0 ; k < RGB ; ++k){
                 if(j < SIZE)
@@ -557,7 +580,7 @@ void RGB1::Skew_RightRGB() {
     save = false ;
     MenuRGB();
 }
-
+//skew up the image
 void RGB1::Skew_UpRGB() {
     cout<<"Please enter degree to skew up:"<<flush;
     double a;
