@@ -5,9 +5,9 @@
 using namespace std ;
 
 bool GS::valid(int i, int j) {
-    return i<SIZE&&j<SIZE &&i>=0&&j>=0 ;
+    return i<SIZE&&j<SIZE &&i>=0&&j>=0 ; //check if pixel is out-of range
 }
-
+//this F copies image to image2
 void GS::equal() {
     for(int i = 0; i < 256 ; ++i){
         for(int j = 0; j < 256; ++j){
@@ -16,6 +16,7 @@ void GS::equal() {
     }
 }
 
+//F to save the image after applying any filter
 void GS::saveImage() {
     char imageFileName[100];
     cout << endl << "Enter the target image file name: ";
@@ -31,15 +32,16 @@ void GS::saveImage() {
     }
     cout << endl << "Image saved successfully !!" << endl ;
     if(!exit)
-        Menu();
+        Menu(); // call F to apply the desired filter to image
 }
-
+// F for reading the image
 void GS::loadImage() {
     char imageFileName[100];
     cout << "Enter the source image file name: ";
     cin >> imageFileName;
     // Add to it .bmp extension and load image
     strcat (imageFileName, ".bmp");
+//    check existing this image to load or not
     if(readGSBMP(imageFileName, image) != 1) {
         readGSBMP(imageFileName, temp);
     }
@@ -49,6 +51,7 @@ void GS::loadImage() {
     Menu();
 }
 
+// Allowed filters to apply
 void GS::Menu() {
     int filter;
     cout<<"1- Black & White Filter"<<endl;
@@ -130,6 +133,7 @@ void GS::Menu() {
 
 }
 
+//getting BW image
 void GS::Black_White() {
     for(int i=0;i<SIZE;i++){
         for (int j = 0; j <SIZE ; ++j){
@@ -139,10 +143,11 @@ void GS::Black_White() {
                 image[i][j] = 0;
         }
     }
-    save = false;
+
+    save = false; // allow applying many filter at the same time(run) without changing the original photo
     Menu();
 }
-
+//inverting colors of image
 void GS::Invert() {
     for(int i=0;i < SIZE;i++){
         for (int j = 0; j < SIZE ; ++j) {
@@ -152,7 +157,7 @@ void GS::Invert() {
     save= false;
     Menu();
 }
-
+//merge bet. 2 images
 void GS::Merge() {
     char imageFileName[100];
     cout << "   Please enter name of image file to merge with: ";
@@ -165,14 +170,13 @@ void GS::Merge() {
             }
         }
         save= false;
-        cout << endl << "Filter Applied Successfully !!" << endl ;
         Menu();
     }else{
         cout << "ERROR!!" << endl ;
         Merge();
     }
 }
-
+//Flipping image horizontally and vertically
 void GS::Flip() {
     char f;
     cout <<"   Flip (h)orizontally or (v)ertically ? "<< flush;
@@ -210,17 +214,16 @@ void GS::Flip() {
     else{
         equal();
         save= false;
-        cout << endl << "Filter Applied Successfully !!" << endl ;
         Menu();
     }
 }
-
+//rotating image with diff. angles
 void GS::Rotate() {
     int rotate;
     cout<<"   Rotate (90), (180) or (270) degrees? "<<flush;
     cin>>rotate;
     if(rotate == 90 || rotate == 180 || rotate == 270){
-        int flips = rotate/90 ;
+        int flips = rotate/90 ; //no. of flips according to chosen angle
         while(flips--){
             for (int i = 0; i < SIZE/2; i++){
                 for (int j = i; j<SIZE-i-1; j++){
@@ -233,7 +236,6 @@ void GS::Rotate() {
             }
         }
         save= false;
-        cout << endl << "Filter Applied Successfully !!" << endl ;
         Menu();
     }
     else{
@@ -241,7 +243,7 @@ void GS::Rotate() {
         Rotate();
     }
 }
-
+//get dark and light image
 void GS::Darken_Lighten() {
     char mood;
     cout<<"   Do you want to (d)arken or (l)ighten? "<<flush;
@@ -253,7 +255,6 @@ void GS::Darken_Lighten() {
             }
         }
         save = false;
-        cout << endl << "Filter Applied Successfully !!" << endl ;
         Menu();
     }
     else if(mood=='l'){
@@ -263,7 +264,6 @@ void GS::Darken_Lighten() {
             }
         }
         save = false;
-        cout << endl << "Filter Applied Successfully !!" << endl ;
         Menu();
     }
     else{
@@ -272,6 +272,7 @@ void GS::Darken_Lighten() {
     }
 }
 
+// showing the edges image includes
 void GS::Detect_Edge() {
     for(int i=0;i<SIZE;i++){
         for (int j = 0; j <SIZE ; ++j){
@@ -283,7 +284,7 @@ void GS::Detect_Edge() {
     }
     for(int i=0;i<SIZE;i++){
         for (int j = 0; j <SIZE ; ++j){
-            if(image[i][j]==0&&
+            if(image[i][j]==0&& // detect of any pixel around is white(means it is an edge)
                ((valid(i-1,j-1)&&image[i-1][j-1]==255)
                 ||(valid(i-1,j)&&image[i-1][j]==255)
                 ||(valid(i-1,j+1)&&image[i-1][j+1]==255)
@@ -293,7 +294,7 @@ void GS::Detect_Edge() {
                 ||(valid(i+1,j+1)&&image[i+1][j+1]==255)
                 ||(valid(i,j+1)&&image[i][j+1]==255)))
             {
-                image2[i][j]=0;
+                image2[i][j]=0; // using image2 don't change in the original image and affect the result
             }
             else{
                 image2[i][j]=255;
@@ -304,6 +305,7 @@ void GS::Detect_Edge() {
     Menu();
 }
 
+//enlarge any chosen quarter of image
 void GS::Enlarge() {
     int qu;
     cout << "Which quarter to enlarge 1, 2, 3 or 4?" << flush;
@@ -317,7 +319,7 @@ void GS::Enlarge() {
             }
             for (int i = 0; i < 256; ++i) {
                 for (int j = 0; j < 256; ++j) {
-                    image2[i][j] = image3[i / 2][j / 2];
+                    image2[i][j] = image3[i / 2][j / 2]; //
                 }
             }
 
@@ -370,7 +372,7 @@ void GS::Enlarge() {
     equal();
     Menu();
 }
-
+// shrinking image to any chosen dimensions
 void GS::Shrink() {
     cout<<"Shrink to (1/(2)), (1/(3)) or (1/(4))?"<<flush;
     int Shrink;
@@ -378,14 +380,14 @@ void GS::Shrink() {
     for (int i = 0; i <SIZE; ++i) {
         for (int j = 0; j < SIZE; ++j) {
             image2[i][j] = 255;
-            image2[i / Shrink][j / Shrink] = image[i][j];
+            image2[i / Shrink][j / Shrink] = image[i][j]; //put shrink changes in image2
         }
     }
     save= false;
     equal();
     Menu();
 }
-
+//mirror any chosen quarter of image
 void GS::Mirror() {
     char c;
     cout << "Mirror (l)eft, (r)ight, (u)pper, (d)own side?" << flush;
@@ -427,31 +429,25 @@ void GS::Mirror() {
     save = false;
     Menu();
 }
-
+//showing a chosen order of quarters
 void GS::Shuffle() {
     int a , b , c , d ;
     cout << "New order of quarters ?" << flush ;
     cin >> a >> b >> c >> d ;
     vector<int> v ;
-    vector<pair<int,int>> beg{{0,0},{0,127},{127,0},{127,127}};
-    vector<pair<int,int>> end{{127,127},{127,255},{255,127},{255,255}};
+    vector<pair<int,int>> beg{{0,0},{0,127},{127,0},{127,127}}; // the dimension of the beginning of each 4 quarters
+    vector<pair<int,int>> end{{127,127},{127,255},{255,127},{255,255}}; // dimensions of the end of each 4 quarters
     v.emplace_back(a) ; v.emplace_back(b) ; v.emplace_back(c) ; v.emplace_back(d) ;
     int o = 0 ;
     for(auto &k : v){
         int y=beg[o].first;
-        for(int i = beg[k-1].first  ; i <= end[k-1].first ; ++i){
+        for(int i = beg[k-1].first ; i <= end[k-1].first ; ++i){
             int h=beg[o].second;
-            for(int j = beg[k-1].second ; j <= end[k-1].second ; ++j)
-            {
-                if(h<=end[o].second){
-                    image2[y][h]=image[i][j];
-                    h++;
-                }
+            for(int j = beg[k-1].second ; j <= end[k-1].second ; ++j){
+                image2[y][h]=image[i][j];
+                h++;
             }
-            if(y<=end[o].first)
-            {
-                y++;
-            }
+            y++;
         }
         o++;
     }
@@ -459,7 +455,7 @@ void GS::Shuffle() {
     save = false ;
     Menu();
 }
-
+// get a Blur image
 void GS::Blur() {
     int b = 4 ;
     while(b--) {
@@ -475,7 +471,7 @@ void GS::Blur() {
                      || (valid(i + 1, j) && (y += image[i + 1][j]) && ++cnt)
                      || (valid(i + 1, j + 1) && (y += image[i + 1][j + 1]) && ++cnt)
                      || (valid(i, j + 1) && (y += image[i][j + 1]) && ++cnt))) {
-                    image[i][j] = y / cnt;
+                    image[i][j] = y / cnt; //getting avg of all pixels around to blur it
                 }
             }
         }
@@ -484,6 +480,7 @@ void GS::Blur() {
     Menu();
 }
 
+//cropping image to your chosen dimensions
 void GS::Crop() {
     cout<<"Please enter x y l w:"<<flush;
     int x,y,l,w;
@@ -499,13 +496,13 @@ void GS::Crop() {
     save= false;
     Menu();
 }
-
+ //slopping the image to the right
 void GS::Skew_Right() {
     cout<<"Please enter degree to skew right:"<<flush;
     double a;
     cin>>a;
     a*=3.14/180;
-    int ed=(256*tan(a));
+    int ed=(256*tan(a)); // get the length of edge that image exceeds
     unsigned char img[SIZE][SIZE+ed];
     for (int i = 0; i < SIZE; ++i){
         for (int j = 0; j < SIZE+ed ; ++j){
@@ -513,7 +510,7 @@ void GS::Skew_Right() {
         }
     }
     for (int i = 0; i < SIZE; ++i){
-        int o=(256-i)*tan(a);
+        int o=(256-i)*tan(a); //changing the length of edge over rows
         for (int j = 0; j+o < SIZE+ed ; ++j){
             if(j < SIZE)
                 img[i][j+o]=image[i][j];
@@ -528,7 +525,7 @@ void GS::Skew_Right() {
     Menu();
 
 }
-
+//slopping up the image
 void GS::Skew_Up() {
     cout<<"Please enter degree to skew up:"<<flush;
     double a;
